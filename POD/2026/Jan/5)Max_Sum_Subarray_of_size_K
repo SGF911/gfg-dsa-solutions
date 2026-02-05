@@ -1,0 +1,79 @@
+/**
+ * ============================================================
+ *  GeeksforGeeks – Problem of the Day
+ * ============================================================
+ *
+ * 📅 Date       : 05 February 2026
+ * 📌 Problem    : Max Sum Subarray of Size K
+ * 🟢 Difficulty : Easy
+ *
+ * ------------------------------------------------------------
+ * 🧩 Problem Description:
+ * Given an integer array `arr[]` and an integer `k`, find the
+ * maximum sum of any contiguous subarray of size `k`.
+ *
+ * A subarray is a contiguous part of an array.
+ *
+ * ------------------------------------------------------------
+ * 💡 Approach (Sliding Window Technique):
+ * 1. Calculate the sum of the first window of size `k`
+ * 2. Slide the window one element at a time:
+ *    - Add the next element
+ *    - Remove the element leaving the window
+ * 3. Track the maximum sum encountered
+ *
+ * This avoids recalculating sums and runs in linear time.
+ *
+ * ------------------------------------------------------------
+ * ⏱️ Complexity Analysis:
+ * Time Complexity  : O(N)
+ * Space Complexity : O(1)
+ *
+ * ------------------------------------------------------------
+ * 🧪 Examples:
+ *
+ * Input:
+ *   arr = [100, 200, 300, 400], k = 2
+ * Output:
+ *   700
+ *
+ * Input:
+ *   arr = [1, 4, 2, 10, 23, 3, 1, 0, 20], k = 4
+ * Output:
+ *   39
+ *
+ * Input:
+ *   arr = [100, 200, 300, 400], k = 1
+ * Output:
+ *   400
+ *
+ * ------------------------------------------------------------
+ * 🛠️ Usage:
+ * This method is intended to be used within the GeeksforGeeks
+ * evaluation framework.
+ *
+ * ============================================================
+ */
+
+class Solution {
+    public int maxSubarraySum(int[] arr, int k) {
+        int n = arr.length;
+
+        // Sum of first window
+        int windowSum = 0;
+        for (int i = 0; i < k; i++) {
+            windowSum += arr[i];
+        }
+
+        int maxSum = windowSum;
+
+        // Sliding window
+        for (int i = k; i < n; i++) {
+            windowSum += arr[i];
+            windowSum -= arr[i - k];
+            maxSum = Math.max(maxSum, windowSum);
+        }
+
+        return maxSum;
+    }
+}

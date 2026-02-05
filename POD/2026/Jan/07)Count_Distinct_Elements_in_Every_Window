@@ -1,0 +1,92 @@
+/**
+ * ============================================================
+ *  GeeksforGeeks – Problem of the Day
+ * ============================================================
+ *
+ * 📅 Date       : 07 February 2026
+ * 📌 Problem    : Count Distinct Elements in Every Window
+ * 🟡 Difficulty : Medium
+ *
+ * ------------------------------------------------------------
+ * 🧩 Problem Description:
+ * Given an integer array `arr[]` and an integer `k`, determine
+ * the number of distinct elements in every contiguous subarray
+ * (window) of size `k`.
+ *
+ * A window is a contiguous part of the array.
+ *
+ * ------------------------------------------------------------
+ * 💡 Approach (Sliding Window + HashMap):
+ * 1. Use a HashMap to store element frequencies in the window
+ * 2. Initialize the first window of size `k`
+ * 3. For every slide:
+ *    - Remove the outgoing element (decrease frequency)
+ *    - Remove it from map if frequency becomes zero
+ *    - Add the incoming element
+ * 4. The map size represents the count of distinct elements
+ *
+ * ------------------------------------------------------------
+ * ⏱️ Complexity Analysis:
+ * Time Complexity  : O(N)
+ * Space Complexity : O(K)
+ *
+ * ------------------------------------------------------------
+ * 🧪 Examples:
+ *
+ * Input:
+ *   arr = [1, 2, 1, 3, 4, 2, 3], k = 4
+ * Output:
+ *   [3, 4, 4, 3]
+ *
+ * Input:
+ *   arr = [4, 1, 1], k = 2
+ * Output:
+ *   [2, 1]
+ *
+ * Input:
+ *   arr = [1, 1, 1, 1, 1], k = 3
+ * Output:
+ *   [1, 1, 1]
+ *
+ * ------------------------------------------------------------
+ * 🛠️ Usage:
+ * This method is intended to be used within the
+ * GeeksforGeeks evaluation framework.
+ *
+ * ============================================================
+ */
+
+import java.util.*;
+
+class Solution {
+
+    ArrayList<Integer> countDistinct(int[] arr, int k) {
+        ArrayList<Integer> result = new ArrayList<>();
+        HashMap<Integer, Integer> freqMap = new HashMap<>();
+
+        // Initialize first window
+        for (int i = 0; i < k; i++) {
+            freqMap.put(arr[i], freqMap.getOrDefault(arr[i], 0) + 1);
+        }
+
+        result.add(freqMap.size());
+
+        // Slide the window
+        for (int i = k; i < arr.length; i++) {
+
+            // Remove outgoing element
+            int out = arr[i - k];
+            freqMap.put(out, freqMap.get(out) - 1);
+            if (freqMap.get(out) == 0) {
+                freqMap.remove(out);
+            }
+
+            // Add incoming element
+            freqMap.put(arr[i], freqMap.getOrDefault(arr[i], 0) + 1);
+
+            result.add(freqMap.size());
+        }
+
+        return result;
+    }
+}

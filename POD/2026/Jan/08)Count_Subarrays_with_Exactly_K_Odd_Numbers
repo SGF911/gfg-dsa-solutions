@@ -1,0 +1,87 @@
+/**
+ * ============================================================
+ *  GeeksforGeeks – Problem of the Day
+ * ============================================================
+ *
+ * 📅 Date       : 08 February 2026
+ * 📌 Problem    : Count Subarrays with Exactly K Odd Numbers
+ * 🟡 Difficulty : Medium
+ *
+ * ------------------------------------------------------------
+ * 🧩 Problem Description:
+ * Given an array `arr[]` of positive integers and an integer
+ * `k`, count the number of contiguous subarrays that contain
+ * exactly `k` odd numbers.
+ *
+ * ------------------------------------------------------------
+ * 💡 Approach (Sliding Window – At Most K Trick):
+ * Instead of directly counting subarrays with exactly `k` odds,
+ * we use the identity:
+ *
+ *   Exactly(K) = AtMost(K) - AtMost(K - 1)
+ *
+ * Steps:
+ * 1. Create a helper function to count subarrays with
+ *    at most `k` odd numbers
+ * 2. Use a sliding window:
+ *    - Expand right pointer
+ *    - Shrink left pointer when odd count exceeds `k`
+ * 3. Accumulate valid subarrays
+ *
+ * ------------------------------------------------------------
+ * ⏱️ Complexity Analysis:
+ * Time Complexity  : O(N)
+ * Space Complexity : O(1)
+ *
+ * ------------------------------------------------------------
+ * 🧪 Examples:
+ *
+ * Input:
+ *   arr = [2, 5, 6, 9], k = 2
+ * Output:
+ *   2
+ *
+ * Input:
+ *   arr = [2, 2, 5, 6, 9, 2, 11], k = 2
+ * Output:
+ *   8
+ *
+ * ------------------------------------------------------------
+ * 🛠️ Usage:
+ * This method is intended to be used within the
+ * GeeksforGeeks evaluation framework.
+ *
+ * ============================================================
+ */
+
+class Solution {
+
+    // Counts subarrays with exactly k odd numbers
+    public int countSubarrays(int[] arr, int k) {
+        int n = arr.length;
+        return atMostKOdds(arr, n, k) - atMostKOdds(arr, n, k - 1);
+    }
+
+    // Helper: counts subarrays with at most k odd numbers
+    private int atMostKOdds(int[] arr, int n, int k) {
+        int left = 0, oddCount = 0, count = 0;
+
+        for (int right = 0; right < n; right++) {
+            if (arr[right] % 2 != 0) {
+                oddCount++;
+            }
+
+            while (oddCount > k) {
+                if (arr[left] % 2 != 0) {
+                    oddCount--;
+                }
+                left++;
+            }
+
+            // All subarrays ending at 'right' are valid
+            count += (right - left + 1);
+        }
+
+        return count;
+    }
+}

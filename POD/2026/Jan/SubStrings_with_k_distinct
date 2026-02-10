@@ -1,0 +1,91 @@
+/**
+ * ============================================================
+ *  GeeksforGeeks – Problem of the Day
+ * ============================================================
+ *
+ * 📅 Date       : 09 February 2026
+ * 📌 Problem    : Count Substrings with Exactly K Distinct Characters
+ * 🟡 Difficulty : Medium
+ *
+ * ------------------------------------------------------------
+ * 🧩 Problem Description:
+ * Given a string `s` consisting of lowercase characters and an
+ * integer `k`, count all possible substrings of `s` that contain
+ * exactly `k` distinct characters.
+ *
+ * ------------------------------------------------------------
+ * 💡 Approach (Sliding Window + AtMostK Trick):
+ * To find substrings with exactly `k` distinct characters:
+ *
+ * Exactly K = At Most K − At Most (K − 1)
+ *
+ * 1. Use a sliding window with two pointers (`left`, `right`)
+ * 2. Maintain a frequency array of size 26 for characters
+ * 3. Expand the window by moving the right pointer
+ * 4. Shrink the window from the left when distinct count
+ *    exceeds `k`
+ * 5. For each valid window, add (right - left + 1) to the count
+ * 6. Subtract results of atMostK(k - 1) from atMostK(k)
+ *
+ * ------------------------------------------------------------
+ * ⏱️ Complexity Analysis:
+ * Time Complexity  : O(N)
+ * Space Complexity : O(1)
+ *
+ * ------------------------------------------------------------
+ * 🧪 Examples:
+ *
+ * Input:
+ *   s = "abc", k = 2
+ * Output:
+ *   2
+ *
+ * Input:
+ *   s = "aba", k = 2
+ * Output:
+ *   3
+ *
+ * Input:
+ *   s = "aa", k = 1
+ * Output:
+ *   3
+ *
+ * ------------------------------------------------------------
+ * 🛠️ Usage:
+ * This method is intended to be used within the
+ * GeeksforGeeks evaluation framework.
+ *
+ * ============================================================
+ */
+
+class Solution {
+
+    long countSubstr(String s, int k) {
+        if (k == 0) return 0;
+        return atMostK(s, k) - atMostK(s, k - 1);
+    }
+
+    private long atMostK(String s, int k) {
+        int[] freq = new int[26];
+        int left = 0, distinct = 0;
+        long count = 0;
+
+        for (int right = 0; right < s.length(); right++) {
+
+            int idx = s.charAt(right) - 'a';
+            if (freq[idx] == 0) distinct++;
+            freq[idx]++;
+
+            while (distinct > k) {
+                int leftIdx = s.charAt(left) - 'a';
+                freq[leftIdx]--;
+                if (freq[leftIdx] == 0) distinct--;
+                left++;
+            }
+
+            count += (right - left + 1);
+        }
+
+        return count;
+    }
+}

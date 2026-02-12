@@ -1,0 +1,119 @@
+/**
+ * ============================================================
+ *  GeeksforGeeks – Problem of the Day
+ * ============================================================
+ *
+ * 📅 Date       : 19 January 2026
+ * 📌 Problem    : Remove K Digits
+ * 🟡 Difficulty : Medium
+ *
+ * ------------------------------------------------------------
+ * 🧩 Problem Description:
+ *
+ * Given a non-negative integer `s` represented as a string
+ * and an integer `k`, remove exactly `k` digits so that the
+ * resulting number is the smallest possible.
+ *
+ * ✔ The relative order of digits must be maintained.
+ * ✔ The resulting number must not contain leading zeros.
+ * ✔ If the result becomes empty, return "0".
+ *
+ * ------------------------------------------------------------
+ * 💡 Approach (Monotonic Increasing Stack):
+ *
+ * 🔹 Idea:
+ * To make the number smallest, remove digits that are
+ * larger than the next digit.
+ *
+ * 🔹 Steps:
+ *
+ * 1️⃣ Traverse each digit in the string.
+ *
+ * 2️⃣ While:
+ *      - Stack is not empty
+ *      - k > 0
+ *      - Top of stack > current digit
+ *    Pop from stack (remove larger digit).
+ *
+ * 3️⃣ Push current digit into stack.
+ *
+ * 4️⃣ If k still > 0 after traversal,
+ *    remove remaining digits from top.
+ *
+ * 5️⃣ Build result from stack.
+ *
+ * 6️⃣ Remove leading zeros.
+ *
+ * 7️⃣ If result becomes empty → return "0".
+ *
+ * ------------------------------------------------------------
+ * ⏱️ Complexity Analysis:
+ *
+ * Time Complexity  : O(N)
+ * Space Complexity : O(N)
+ *
+ * (Each digit is pushed and popped at most once)
+ *
+ * ------------------------------------------------------------
+ * 🧪 Examples:
+ *
+ * Example 1:
+ * Input:
+ *   s = "4325043", k = 3
+ *
+ * Output:
+ *   "2043"
+ *
+ * Example 2:
+ * Input:
+ *   s = "765028321", k = 5
+ *
+ * Output:
+ *   "221"
+ *
+ * ------------------------------------------------------------
+ * 🛠️ Usage:
+ * Designed for GeeksforGeeks evaluation environment.
+ *
+ * ============================================================
+ */
+
+import java.util.*;
+
+class Solution {
+    public String removeKdig(String s, int k) {
+        Stack<Character> stack = new Stack<>();
+
+        // Step 1 & 2: Build monotonic increasing stack
+        for (char c : s.toCharArray()) {
+            while (!stack.isEmpty() && k > 0 && stack.peek() > c) {
+                stack.pop();
+                k--;
+            }
+            stack.push(c);
+        }
+
+        // Step 3: If k still remains, remove from top
+        while (k > 0 && !stack.isEmpty()) {
+            stack.pop();
+            k--;
+        }
+
+        // Step 4: Build string from stack
+        StringBuilder sb = new StringBuilder();
+        for (char c : stack) {
+            sb.append(c);
+        }
+
+        // Step 5: Remove leading zeros
+        int idx = 0;
+        while (idx < sb.length() && sb.charAt(idx) == '0') {
+            idx++;
+        }
+
+        String res = sb.substring(idx);
+
+        // Step 6: Edge case
+        return res.isEmpty() ? "0" : res;
+    }
+}

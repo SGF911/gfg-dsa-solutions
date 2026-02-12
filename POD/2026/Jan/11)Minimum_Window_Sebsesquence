@@ -1,0 +1,117 @@
+/**
+ * ============================================================
+ *  GeeksforGeeks – Problem of the Day
+ * ============================================================
+ *
+ * 📅 Date       : 11 January 2026
+ * 📌 Problem    : Minimum Window Substring (Subsequence Version)
+ * 🟡 Difficulty : Medium
+ *
+ * ------------------------------------------------------------
+ * 🧩 Problem Description:
+ * Given two strings `s1` and `s2`, find the smallest substring
+ * in `s1` such that `s2` appears as a subsequence within that
+ * substring.
+ *
+ * Conditions:
+ * • Characters of `s2` must appear in the same order
+ * • If multiple substrings have same minimum length,
+ *   return the leftmost one
+ * • If no valid substring exists, return an empty string
+ *
+ * ------------------------------------------------------------
+ * 💡 Approach (Forward + Backward Two-Pointer Scan):
+ *
+ * 1. Iterate through `s1`
+ * 2. When first character of `s2` matches, start forward scan
+ *    to check if full `s2` appears as subsequence
+ * 3. If matched, perform backward scan to shrink the window
+ *    and find the minimum starting index
+ * 4. Track minimum length substring
+ * 5. Return the smallest valid window
+ *
+ * ------------------------------------------------------------
+ * ⏱️ Complexity Analysis:
+ * Time Complexity  : O(N²)
+ * Space Complexity : O(1)
+ *
+ * ------------------------------------------------------------
+ * 🧪 Examples:
+ *
+ * Input:
+ *   s1 = "geeksforgeeks", s2 = "eksrg"
+ * Output:
+ *   "eksforg"
+ *
+ * Input:
+ *   s1 = "abcdebdde", s2 = "bde"
+ * Output:
+ *   "bcde"
+ *
+ * Input:
+ *   s1 = "ad", s2 = "b"
+ * Output:
+ *   ""
+ *
+ * ------------------------------------------------------------
+ * 🛠️ Usage:
+ * This method is intended to be used within the
+ * GeeksforGeeks evaluation framework.
+ *
+ * ============================================================
+ */
+
+class Solution {
+
+    public static String minWindow(String s1, String s2) {
+
+        int n = s1.length();
+        int m = s2.length();
+
+        int minLen = Integer.MAX_VALUE;
+        int start = -1;
+
+        for (int i = 0; i < n; i++) {
+
+            // s2 must start matching from s1[i]
+            if (s1.charAt(i) != s2.charAt(0)) continue;
+
+            int j = 0;
+            int k = i;
+
+            // Forward scan to match s2 as subsequence
+            while (k < n && j < m) {
+                if (s1.charAt(k) == s2.charAt(j)) {
+                    j++;
+                }
+                k++;
+            }
+
+            // If full s2 not matched
+            if (j < m) continue;
+
+            // Backward scan to minimize window
+            int end = k - 1;
+            j = m - 1;
+            k = end;
+
+            while (k >= i) {
+                if (s1.charAt(k) == s2.charAt(j)) {
+                    j--;
+                }
+                k--;
+                if (j < 0) break;
+            }
+
+            k++; // correct start index
+
+            // Update answer
+            if (end - k + 1 < minLen) {
+                minLen = end - k + 1;
+                start = k;
+            }
+        }
+
+        return start == -1 ? "" : s1.substring(start, start + minLen);
+    }
+}

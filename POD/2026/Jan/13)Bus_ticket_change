@@ -1,0 +1,107 @@
+/**
+ * ============================================================
+ *  GeeksforGeeks – Problem of the Day
+ * ============================================================
+ *
+ * 📅 Date       : 13 January 2026
+ * 📌 Problem    : Lemonade Change (Serve All Passengers)
+ * 🟢 Difficulty : Easy
+ *
+ * ------------------------------------------------------------
+ * 🧩 Problem Description:
+ * You are given an array `arr[]` representing passengers in a queue.
+ * Each bus ticket costs 5 coins.
+ *
+ * Each passenger pays using either a 5, 10, or 20 coin note.
+ * You must serve passengers in order and always return correct
+ * change so that each passenger effectively pays exactly 5 coins.
+ *
+ * Return `true` if it is possible to serve all passengers
+ * without running out of change, otherwise return `false`.
+ *
+ * ------------------------------------------------------------
+ * 💡 Approach (Greedy):
+ *
+ * 1. Maintain two counters:
+ *      - five → number of 5-coin notes
+ *      - ten  → number of 10-coin notes
+ *
+ * 2. If passenger pays with:
+ *
+ *    • 5  → simply increment five
+ *
+ *    • 10 → we must give back one 5
+ *            - If no 5 available → return false
+ *            - Otherwise decrement five and increment ten
+ *
+ *    • 20 → we must give back 15
+ *            - Prefer giving (10 + 5) if possible
+ *            - Otherwise give three 5s
+ *            - If neither possible → return false
+ *
+ * This greedy strategy ensures optimal change handling.
+ *
+ * ------------------------------------------------------------
+ * ⏱️ Complexity Analysis:
+ * Time Complexity  : O(N)
+ * Space Complexity : O(1)
+ *
+ * ------------------------------------------------------------
+ * 🧪 Examples:
+ *
+ * Input:
+ *   arr = [5, 5, 5, 10, 20]
+ * Output:
+ *   true
+ *
+ * Input:
+ *   arr = [5, 5, 10, 10, 20]
+ * Output:
+ *   false
+ *
+ * ------------------------------------------------------------
+ * 🛠️ Usage:
+ * This method is intended to be used within the
+ * GeeksforGeeks evaluation framework.
+ *
+ * ============================================================
+ */
+
+class Solution {
+
+    public boolean canServe(int[] arr) {
+
+        int five = 0, ten = 0;
+
+        for (int bill : arr) {
+
+            if (bill == 5) {
+                five++;
+            }
+
+            else if (bill == 10) {
+                if (five == 0)
+                    return false;
+
+                five--;
+                ten++;
+            }
+
+            else { // bill == 20
+
+                if (ten > 0 && five > 0) {
+                    ten--;
+                    five--;
+                }
+                else if (five >= 3) {
+                    five -= 3;
+                }
+                else {
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
+}

@@ -1,0 +1,128 @@
+/**
+ * ============================================================
+ *  GeeksforGeeks – Problem of the Day
+ * ============================================================
+ *
+ * 📅 Date       : 23 January 2026
+ * 📌 Problem    : Maximum People Visible
+ * 🟡 Difficulty : Medium
+ *
+ * ------------------------------------------------------------
+ * 🧩 Problem Description:
+ *
+ * You are given an array arr[], where arr[i] represents the
+ * height of the ith person standing in a line.
+ *
+ * A person i can see another person j if:
+ *
+ *  1. height[j] < height[i]
+ *  2. There is no person k between i and j such that
+ *     height[k] ≥ height[i]
+ *
+ * Each person can see in both directions (left and right).
+ *
+ * Your task is to return the maximum number of people
+ * that any person can see (including themselves).
+ *
+ * ------------------------------------------------------------
+ * 💡 Approach (Monotonic Stack – Visibility Counting):
+ *
+ * We compute visibility in two passes:
+ *
+ * 1️⃣ Left to Right:
+ *     Count how many shorter people each person can see
+ *     on their LEFT side.
+ *
+ * 2️⃣ Right to Left:
+ *     Count how many shorter people each person can see
+ *     on their RIGHT side.
+ *
+ * We use a stack that stores:
+ *     (height, number of people visible from that height)
+ *
+ * While current height is greater than stack top,
+ * we pop and accumulate visibility count.
+ *
+ * Final Answer for each person:
+ *
+ *     left[i] + right[i] + 1 (including themselves)
+ *
+ * Take maximum over all.
+ *
+ * ------------------------------------------------------------
+ * ⏱️ Complexity Analysis:
+ *
+ * Time Complexity  : O(N)
+ * Space Complexity : O(N)
+ *
+ * Each element is pushed and popped at most once.
+ *
+ * ------------------------------------------------------------
+ * 🧪 Example:
+ *
+ * Input:
+ *   [6, 2, 5, 4, 5, 1, 6]
+ *
+ * Output:
+ *   6
+ *
+ * ------------------------------------------------------------
+ * 🛠️ Designed for GFG driver environment
+ * ============================================================
+ */
+
+import java.util.*;
+
+class Solution {
+
+    static class Pair {
+        int height, count;
+        Pair(int h, int c) {
+            height = h;
+            count = c;
+        }
+    }
+
+    public int maxPeople(int[] arr) {
+        int n = arr.length;
+        int[] left = new int[n];
+        int[] right = new int[n];
+
+        Stack<Pair> st = new Stack<>();
+
+        // LEFT visibility
+        for (int i = 0; i < n; i++) {
+            int seen = 0;
+
+            while (!st.isEmpty() && st.peek().height < arr[i]) {
+                seen += st.peek().count + 1;
+                st.pop();
+            }
+
+            left[i] = seen;
+            st.push(new Pair(arr[i], seen));
+        }
+
+        st.clear();
+
+        // RIGHT visibility
+        for (int i = n - 1; i >= 0; i--) {
+            int seen = 0;
+
+            while (!st.isEmpty() && st.peek().height < arr[i]) {
+                seen += st.peek().count + 1;
+                st.pop();
+            }
+
+            right[i] = seen;
+            st.push(new Pair(arr[i], seen));
+        }
+
+        int ans = 0;
+        for (int i = 0; i < n; i++) {
+            ans = Math.max(ans, left[i] + right[i] + 1);
+        }
+
+        return ans;
+    }
+}

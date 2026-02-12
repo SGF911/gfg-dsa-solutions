@@ -1,0 +1,108 @@
+/**
+ * ============================================================
+ *  GeeksforGeeks – Problem of the Day
+ * ============================================================
+ *
+ * 📅 Date       : 17 January 2026
+ * 📌 Problem    : Check for Redundant Parentheses
+ * 🟡 Difficulty : Medium
+ *
+ * ------------------------------------------------------------
+ * 🧩 Problem Description:
+ * Given a balanced expression string `s`, determine whether
+ * it contains any redundant parentheses.
+ *
+ * A set of parentheses is considered redundant if the same
+ * sub-expression is surrounded by unnecessary or multiple
+ * brackets.
+ *
+ * The expression may contain operators:
+ *      +, -, *, /
+ *
+ * The expression is valid and contains no whitespace.
+ *
+ * ------------------------------------------------------------
+ * 💡 Approach (Using Stack):
+ *
+ * 1. Traverse the string character by character.
+ * 2. Push every character onto the stack until a ')'
+ *    is encountered.
+ * 3. When ')' is found:
+ *      - Pop elements until '(' is encountered.
+ *      - Check if there was at least one operator inside.
+ * 4. If no operator is found inside the parentheses,
+ *    then they are redundant → return true.
+ * 5. If traversal completes without redundancy,
+ *    return false.
+ *
+ * ------------------------------------------------------------
+ * ⏱️ Complexity Analysis:
+ * Time Complexity  : O(N)
+ * Space Complexity : O(N)
+ *
+ * ------------------------------------------------------------
+ * 🧪 Examples:
+ *
+ * Input:
+ *   s = "((a+b))"
+ * Output:
+ *   true
+ *
+ * Input:
+ *   s = "(a+(b)/c)"
+ * Output:
+ *   true
+ *
+ * Input:
+ *   s = "(a+b+(c+d))"
+ * Output:
+ *   false
+ *
+ * ------------------------------------------------------------
+ * 🛠️ Usage:
+ * This method is intended to be used within the
+ * GeeksforGeeks evaluation framework.
+ *
+ * ============================================================
+ */
+
+import java.util.Stack;
+
+class Solution {
+
+    public static boolean checkRedundancy(String s) {
+
+        Stack<Character> stack = new Stack<>();
+
+        for (char ch : s.toCharArray()) {
+
+            // If closing bracket encountered
+            if (ch == ')') {
+
+                boolean hasOperator = false;
+
+                // Pop until opening bracket
+                while (!stack.isEmpty() && stack.peek() != '(') {
+                    char top = stack.pop();
+
+                    if (top == '+' || top == '-' || top == '*' || top == '/') {
+                        hasOperator = true;
+                    }
+                }
+
+                // Remove '('
+                stack.pop();
+
+                // If no operator found → redundant
+                if (!hasOperator) {
+                    return true;
+                }
+            }
+            else {
+                stack.push(ch);
+            }
+        }
+
+        return false;
+    }
+}

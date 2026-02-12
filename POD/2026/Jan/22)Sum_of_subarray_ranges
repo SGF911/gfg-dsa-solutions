@@ -1,0 +1,156 @@
+/**
+ * ============================================================
+ *  GeeksforGeeks – Problem of the Day
+ * ============================================================
+ *
+ * 📅 Date       : 22 January 2026
+ * 📌 Problem    : Sum of Subarray Ranges
+ * 🟡 Difficulty : Medium–Hard
+ *
+ * ------------------------------------------------------------
+ * 🧩 Problem Description:
+ *
+ * Given an integer array arr[], the range of a subarray is defined as:
+ *
+ *      Range = (Maximum element - Minimum element)
+ *
+ * Your task is to return the sum of ranges of all possible
+ * subarrays of the given array.
+ *
+ * It is guaranteed that the result fits in a 32-bit integer.
+ *
+ * ------------------------------------------------------------
+ * 💡 Key Insight:
+ *
+ * Instead of generating all subarrays (which would take O(N²)),
+ * we calculate:
+ *
+ *      Total Contribution as Maximum
+ *   -  Total Contribution as Minimum
+ *
+ * For every element arr[i], we calculate:
+ *
+ *   How many subarrays consider it as MAXIMUM
+ *   How many subarrays consider it as MINIMUM
+ *
+ * Then:
+ *
+ *   Sum of ranges = (Sum of all maximum contributions)
+ *                 - (Sum of all minimum contributions)
+ *
+ * ------------------------------------------------------------
+ * 🔥 Approach (Monotonic Stack Technique):
+ *
+ * We use stack to find:
+ *
+ * For Maximum:
+ *   • Previous Greater Element
+ *   • Next Greater Element
+ *
+ * For Minimum:
+ *   • Previous Smaller Element
+ *   • Next Smaller Element
+ *
+ * Contribution Formula:
+ *
+ *   Contribution of arr[i] =
+ *        arr[i] × (Left Count) × (Right Count)
+ *
+ * ------------------------------------------------------------
+ * ⏱️ Complexity Analysis:
+ *
+ * Time Complexity  : O(N)
+ * Space Complexity : O(N)
+ *
+ * Each element is pushed and popped at most once.
+ *
+ * ------------------------------------------------------------
+ * 🧪 Example:
+ *
+ * Input:
+ *   [1, 2, 3]
+ *
+ * Output:
+ *   4
+ *
+ * ------------------------------------------------------------
+ * 🛠️ Designed for GFG driver environment
+ * ============================================================
+ */
+
+import java.util.*;
+
+class Solution {
+    public static int subarrayRanges(int[] arr) {
+        int n = arr.length;
+        long sumMax = getSumMax(arr, n);
+        long sumMin = getSumMin(arr, n);
+        return (int)(sumMax - sumMin);
+    }
+
+    // Calculate total contribution as maximum
+    private static long getSumMax(int[] arr, int n) {
+        int[] left = new int[n];
+        int[] right = new int[n];
+        Stack<Integer> stack = new Stack<>();
+
+        // Previous Greater Element
+        for (int i = 0; i < n; i++) {
+            while (!stack.isEmpty() && arr[stack.peek()] <= arr[i]) {
+                stack.pop();
+            }
+            left[i] = stack.isEmpty() ? i + 1 : i - stack.peek();
+            stack.push(i);
+        }
+
+        stack.clear();
+
+        // Next Greater Element
+        for (int i = n - 1; i >= 0; i--) {
+            while (!stack.isEmpty() && arr[stack.peek()] < arr[i]) {
+                stack.pop();
+            }
+            right[i] = stack.isEmpty() ? n - i : stack.peek() - i;
+            stack.push(i);
+        }
+
+        long sum = 0;
+        for (int i = 0; i < n; i++) {
+            sum += (long) arr[i] * left[i] * right[i];
+        }
+        return sum;
+    }
+
+    // Calculate total contribution as minimum
+    private static long getSumMin(int[] arr, int n) {
+        int[] left = new int[n];
+        int[] right = new int[n];
+        Stack<Integer> stack = new Stack<>();
+
+        // Previous Smaller Element
+        for (int i = 0; i < n; i++) {
+            while (!stack.isEmpty() && arr[stack.peek()] >= arr[i]) {
+                stack.pop();
+            }
+            left[i] = stack.isEmpty() ? i + 1 : i - stack.peek();
+            stack.push(i);
+        }
+
+        stack.clear();
+
+        // Next Smaller Element
+        for (int i = n - 1; i >= 0; i--) {
+            while (!stack.isEmpty() && arr[stack.peek()] > arr[i]) {
+                stack.pop();
+            }
+            right[i] = stack.isEmpty() ? n - i : stack.peek() - i;
+            stack.push(i);
+        }
+
+        long sum = 0;
+        for (int i = 0; i < n; i++) {
+            sum += (long) arr[i] * left[i] * right[i];
+        }
+        return sum;
+    }
+}

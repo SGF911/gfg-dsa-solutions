@@ -1,0 +1,88 @@
+/**
+ * ============================================================
+ *  GeeksforGeeks – Problem of the Day
+ * ============================================================
+ *
+ * 📅 Date       : 12 January 2026
+ * 📌 Problem    : Maximum of All Subarrays of Size K
+ * 🟡 Difficulty : Medium
+ *
+ * ------------------------------------------------------------
+ * 🧩 Problem Description:
+ * Given an array `arr[]` of positive integers and an integer `k`,
+ * find the maximum element for each contiguous subarray of size `k`.
+ * Return an array containing the maximum values of each window.
+ *
+ * ------------------------------------------------------------
+ * 💡 Approach (Deque / Sliding Window Optimization):
+ *
+ * 1. Use a Deque to store indices of useful elements
+ * 2. Remove indices that are out of the current window
+ * 3. Remove elements from the back of deque that are smaller
+ *    than the current element (since they will never be maximum)
+ * 4. The front of the deque always contains the index of the
+ *    maximum element for the current window
+ * 5. Once the first window is formed (i >= k - 1),
+ *    add arr[dq.peekFirst()] to result
+ *
+ * This ensures we process each element only once.
+ *
+ * ------------------------------------------------------------
+ * ⏱️ Complexity Analysis:
+ * Time Complexity  : O(N)
+ * Space Complexity : O(K)
+ *
+ * ------------------------------------------------------------
+ * 🧪 Examples:
+ *
+ * Input:
+ *   arr = [1, 2, 3, 1, 4, 5, 2, 3, 6], k = 3
+ * Output:
+ *   [3, 3, 4, 5, 5, 5, 6]
+ *
+ * Input:
+ *   arr = [5, 1, 3, 4, 2], k = 1
+ * Output:
+ *   [5, 1, 3, 4, 2]
+ *
+ * ------------------------------------------------------------
+ * 🛠️ Usage:
+ * This method is intended to be used within the
+ * GeeksforGeeks evaluation framework.
+ *
+ * ============================================================
+ */
+
+import java.util.*;
+
+class Solution {
+
+    public static ArrayList<Integer> maxOfSubarrays(int[] arr, int k) {
+
+        ArrayList<Integer> result = new ArrayList<>();
+        Deque<Integer> dq = new ArrayDeque<>();
+
+        for (int i = 0; i < arr.length; i++) {
+
+            // Remove elements out of this window
+            while (!dq.isEmpty() && dq.peekFirst() <= i - k) {
+                dq.pollFirst();
+            }
+
+            // Remove smaller elements (they are useless)
+            while (!dq.isEmpty() && arr[dq.peekLast()] <= arr[i]) {
+                dq.pollLast();
+            }
+
+            // Add current index
+            dq.offerLast(i);
+
+            // Window is ready
+            if (i >= k - 1) {
+                result.add(arr[dq.peekFirst()]);
+            }
+        }
+
+        return result;
+    }
+}

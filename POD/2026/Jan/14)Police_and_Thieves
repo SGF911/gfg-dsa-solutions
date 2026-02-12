@@ -1,0 +1,96 @@
+/**
+ * ============================================================
+ *  GeeksforGeeks – Problem of the Day
+ * ============================================================
+ *
+ * 📅 Date       : 14 January 2026
+ * 📌 Problem    : Police and Thieves
+ * 🟡 Difficulty : Medium
+ *
+ * ------------------------------------------------------------
+ * 🧩 Problem Description:
+ * Given an array `arr[]` where each element is either 'P'
+ * (policeman) or 'T' (thief), determine the maximum number
+ * of thieves that can be caught.
+ *
+ * Conditions:
+ * • Each policeman can catch only one thief
+ * • A policeman can catch a thief only if the distance
+ *   between them is at most `k`
+ *
+ * ------------------------------------------------------------
+ * 💡 Approach (Greedy + Two Pointers):
+ *
+ * 1. Store indices of all policemen in a list
+ * 2. Store indices of all thieves in another list
+ * 3. Use two pointers to match closest possible pairs
+ * 4. If distance between police[i] and thief[j] ≤ k:
+ *      → increment count and move both pointers
+ * 5. Otherwise move the pointer of the smaller index
+ *
+ * This greedy approach ensures maximum matching.
+ *
+ * ------------------------------------------------------------
+ * ⏱️ Complexity Analysis:
+ * Time Complexity  : O(N)
+ * Space Complexity : O(N)
+ *
+ * ------------------------------------------------------------
+ * 🧪 Examples:
+ *
+ * Input:
+ *   arr = ['P', 'T', 'T', 'P', 'T'], k = 1
+ * Output:
+ *   2
+ *
+ * Input:
+ *   arr = ['T', 'T', 'P', 'P', 'T', 'P'], k = 2
+ * Output:
+ *   3
+ *
+ * ------------------------------------------------------------
+ * 🛠️ Usage:
+ * This method is intended to be used within the
+ * GeeksforGeeks evaluation framework.
+ *
+ * ============================================================
+ */
+
+import java.util.*;
+
+class Solution {
+
+    public static int catchThieves(char[] arr, int k) {
+
+        List<Integer> police = new ArrayList<>();
+        List<Integer> thieves = new ArrayList<>();
+
+        // Store indices of police and thieves
+        for (int i = 0; i < arr.length; i++) {
+            if (arr[i] == 'P')
+                police.add(i);
+            else
+                thieves.add(i);
+        }
+
+        int i = 0, j = 0, count = 0;
+
+        // Two-pointer matching
+        while (i < police.size() && j < thieves.size()) {
+
+            if (Math.abs(police.get(i) - thieves.get(j)) <= k) {
+                count++;
+                i++;
+                j++;
+            }
+            else if (police.get(i) < thieves.get(j)) {
+                i++;
+            }
+            else {
+                j++;
+            }
+        }
+
+        return count;
+    }
+}
